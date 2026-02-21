@@ -1,13 +1,10 @@
 import pygame, sys, math
+import config
 
 pygame.init()
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-
-COLOR1 = (255, 255, 255)
-COLOR2 = (255, 255, 255)
-COLOR3 = (0, 0, 0)
 
 player_pos = pygame.Vector2(WIDTH // 2, HEIGHT // 2)
 player_speed = 4
@@ -49,10 +46,10 @@ while running:
         b["pos"] += b["dir"] * bullet_speed
     bullets = [b for b in bullets if 0 <= b["pos"].x <= WIDTH and 0 <= b["pos"].y <= HEIGHT]
 
-    screen.fill(COLOR3)
-    pygame.draw.circle(screen, COLOR1, player_pos, 15)
+    screen.fill(config.COLOR3)
+    pygame.draw.circle(screen, config.COLOR1, player_pos, 15)
     for b in bullets:
-        pygame.draw.circle(screen, COLOR2, (int(b["pos"].x), int(b["pos"].y)), 4)
+        pygame.draw.circle(screen, config.COLOR2, (int(b["pos"].x), int(b["pos"].y)), 4)
 
     pygame.display.flip()
 
