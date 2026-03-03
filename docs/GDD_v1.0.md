@@ -1,12 +1,14 @@
 # Game Design Document TD-Shooter
 
 ## 1. Spielüberblick
-- Genre:
-- Ziel des Spiels:
-- Zielplattform: (Python EXE, OS)
-- Zielgruppe:
+
+- Genre: Shooter
+- Ziel des Spiels: So viel Score wie möglich erzielen.
+- Zielplattform: Windows
+- Zielgruppe: Jugendliche und junge Erwachsene
 
 ## 2. Gameplay und Regeln
+
 - Spielfigur: Bewegung, Leben, Geschwindigkeit
 - Gegner: Typen, Verhalten (z.B. verfolgen, schiessen)
 - Steuerung: Tasten für Bewegung, Schiessen, Pause
@@ -14,16 +16,23 @@
 - Spielende: Wann ist verloren / gewonnen? Restart?
 
 ## 3. Level und Content
-- Anzahl Level (für MVP):
-- Levelaufbau: Grösse, Layout grob beschrieben
-- Schwierigkeit: Wie steigt sie an?
+
+- Anzahl Level (für MVP): 2
+- Levelaufbau:
+  - Grösse: 16'000 x 8'000
+  - Layout: Viele Hindernisse
+- Schwierigkeit: Anzahl Score
 
 ## 4. Benutzeroberfläche (UI/UX)
-- Hauptscreen: Was wird angezeigt? (Spiel, HP, Score)
-- Start-/Endbildschirm: Welche Infos, welche Buttons?
-- Einfacher Mockup-Link oder kurze Beschreibung.
+
+- Hauptscreen:
+  - Spielfeld: Spielre, Gegner
+  - UI/ UX: Leben, Score und Zeit
+- Start-/Endbildschirm: Starten, Steuerung und Beenden
+- Siehe Dokument:
 
 ## 5. Technisches Konzept / Architektur
+
 - Technologie: Python-Version, Libraries (z.B. pygame)
 - Hauptmodule/Klassen:
   - Game Loop
@@ -31,15 +40,17 @@
   - Enemy
   - Bullet/Projectile
   - Level/Map
-- Datenfluss kurz: Wer ruft wen auf? Wo liegen Ressourcen (Sprites, Sounds)?
 
 ## 6. Nicht-funktionale Anforderungen
-- Performance: Ziel FPS, maximale Gegneranzahl
-- Bedienbarkeit: Vollscreen/Fenster, Steuerung konfigurierbar (ja/nein)
-- Portabilität: Auf welchen Schulrechnern muss es laufen?
+
+- Performance: mind. 50 Gegner auf einmal mit guter Performance.
+- Bedienbarkeit: Window
+- Portabilität: mind. Mid-Range CPU
 
 ## 7. Abnahmekriterien (Aus Sicht BA/AG)
-- Liste von 5–10 „Das Spiel gilt als fertig, wenn …“-Punkten
-  - z.B. „Der Spieler kann sich in vier Richtungen bewegen.“
-  - „Mindestens ein Level ist komplett durchspielbar.“
-  - „Score wird angezeigt und nach Game Over bleibt sichtbar.“
+
+- Das Spiel gilt als fertig, wenn End-Level erreicht und der Spieler stirbt.
+- Der Spieler kann sich in vier Richtungen bewegen.
+- Mindestens zwei Level ist komplett durchspielbar.
+- Score wird angezeigt und nach Game Over bleibt sichtbar.
+- Eigenständiges .exe-Datei.
