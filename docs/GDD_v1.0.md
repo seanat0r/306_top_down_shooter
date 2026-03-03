@@ -9,10 +9,10 @@
   1.4[Benutzeroberfläche (UI/UX)](#14-benutzeroberfläche-uiux)\
   1.5[Technisches Konzept / Architektur](#15-technisches-konzept--architektur)\
   1.6[Nicht-funktionale Anforderungen](#16-nicht-funktionale-anforderungen)\
-  1.7[1.7 Abnahmekriterien (Aus Sicht BA/AG)](#17-abnahmekriterien-aus-sicht-baag)
+  1.7[Abnahmekriterien (Aus Sicht BA/AG)](#17-abnahmekriterien-aus-sicht-baag)
 2. [Spiellogik](#2-spiellogik)\
   2.1[Gameplay Loop](#21-gameloop)\
-  2.2[Entitiy](#22-entity)\
+  2.2[Entity](#22-entity)\
   2.3[Architektur](#23-architektur)
 
 ## 1. Grobspezifikation & Anforderungen
@@ -117,8 +117,28 @@ Dort sollte es wenig Hindernisse geben um die Schwierigkeit etwas einfacher zu h
 
 ##### Level 2
 
-Hier wird das Level mit mehr Hindernisse erstellt, um die Schwierigkeit schwieriger gestallten. Gedacht wäre Dead-Ends um Spieler in die Zwickmüjle zu bringen.
+Hier wird das Level mit mehr Hindernisse erstellt, um die Schwierigkeit schwieriger gestallten. Gedacht wäre Dead-Ends um Spieler in die Zwickmühle zu bringen.
 
 ### 2.2 UI
 
+Das UI/ UX besteht aus 4 Kern Elementen.
+
+1. Die Lebensanzeige
+2. Der Score
+3. Die Munitionsanzeige
+4. Spielfeld
+
+Die Lebensanzeige wird oben links horizontal auf dem Bildschirm dargestellt. Unterhalb davon kommt die Score anzeige, ebensfalls horizontal.
+Die Munitionsanzeige kommt unten rechts als vertikaler Balken. Das Spielfeld ist der Restlicher teil.
+
 ### 2.3 Architektur
+
+Das Spiel wird nach dem EVA-Prinzip (Eingabe, Verarbeitung, Ausgabe) strukturiert und nutzt eine klassenbassierte Architektur:
+
+- **Game-Klasse (Controller)**: Verwaltet den Main-Loop, die Events (Tastatur) und den Wechsel zwischen den Levels.
+- **Sprite-System**: Nutzung der `pygame.sprite.Sprite` Basisklasse für:
+  - `Player`: Enthällt HP-Managment und Bewegungslogik.
+  - `Enemy`: Enthält die Verfolgungs-KI und Schadensberechnung.
+  - `Projectile`: Berechnet die Flugbahn und Kollision mit Hindernissen.
+- **Level-Manager**: Lädt die Map-Daten (Hindernissse) und platziert die Entities.
+- **UI-Manager**: Zeichnet das HUD über das Spielfeld.
