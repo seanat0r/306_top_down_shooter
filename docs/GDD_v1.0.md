@@ -29,7 +29,7 @@
   - Spielfeld: Spielre, Gegner
   - UI/ UX: Leben, Score und Zeit
 - Start-/Endbildschirm: Starten, Steuerung und Beenden
-- Siehe Dokument:
+- Siehe Dokument: `./docs/skizze_benutzeroberfläche.jpg`
 
 ## 5. Technisches Konzept / Architektur
 
