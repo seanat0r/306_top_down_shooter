@@ -1,6 +1,6 @@
 import pygame, sys
 import config
-from src import Player 
+from src import Player, Projectile
 
 pygame.init()
 screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
@@ -24,6 +24,11 @@ while running:
         # Schießen Logik könnte man auch in eine Bullet-Klasse auslagern
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Hier käme der Schuss-Code hin (Erstellen eines Bullet-Sprites)
+            mouse_pos = pygame.mouse.get_pos()
+            new_bullet = Projectile(player.rect.center, mouse_pos)
+
+            all_sprites.add(new_bullet)
+            bullets.add(new_bullet)
             pass
 
     # 2. Update (Verarbeitung)
