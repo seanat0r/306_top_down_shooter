@@ -48,6 +48,8 @@
 - Start-/Endbildschirm: Starten, Steuerung und Beenden
 - Siehe Dokument: `./docs/skizze_benutzeroberfläche.jpg`
 
+![A prototype of the UI](./images/skizze_benutzeroberfläche.jpg "A Basic UI")
+
 ### 1.5 Technisches Konzept / Architektur
 
 - Technologie: Python-Version, Libraries (z.B. pygame)
@@ -130,6 +132,8 @@ Das UI/ UX besteht aus 4 Kern Elementen.
 
 Die Lebensanzeige wird oben links horizontal auf dem Bildschirm dargestellt. Unterhalb davon kommt die Score anzeige, ebensfalls horizontal.
 Die Munitionsanzeige kommt unten rechts als vertikaler Balken. Das Spielfeld ist der Restlicher teil.
+
+![Image showing the UI of the game](./images/Benutzeroberfläche_finale.png "The final UI")
 
 ### 2.3 Architektur
 
