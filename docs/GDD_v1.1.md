@@ -131,7 +131,7 @@ Das HUD besteht aus vier Kernelementen:
 
 Das Spiel folgt dem EVA-Prinzip (Eingabe, Verarbeitung, Ausgabe) und nutzt eine klassenbasierte Struktur:
 
-- **Game-Klasse (Controller)**: VZentrales Management des Main-Loops, des Event-Handlings (Input) und der Level-Übergänge.
+- **Game-Klasse (Controller)**: Zentrales Management des Main-Loops, des Event-Handlings (Input) und der Level-Übergänge.
 - **Sprite-System**: Nutzung von `pygame.sprite.Sprite` für:
   - `Player`: Inklusive HP-Management und Bewegungslogik.
   - `Enemy`: Inklusive Pathfinding/KI und Schadenslogik.
