@@ -1,57 +1,37 @@
-import pygame, sys, math
+import pygame, sys
 import config
+from src import Player 
 
 pygame.init()
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
 clock = pygame.time.Clock()
 
-player_pos = pygame.Vector2(WIDTH // 2, HEIGHT // 2)
-player_speed = 4
-bullets = []
-bullet_speed = 10
+# Gruppen helfen dabei, viele Objekte gleichzeitig zu zeichnen/updaten
+all_sprites = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
+
+player = Player()
+all_sprites.add(player)
 
 running = True
 while running:
     dt = clock.tick(60) / 1000.0
 
+    # 1. Events (Eingabe)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # Schießen Logik könnte man auch in eine Bullet-Klasse auslagern
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            mx, my = pygame.mouse.get_pos()
-            dir_vec = pygame.Vector2(mx, my) - player_pos
-            if dir_vec.length() != 0:
-                dir_vec = dir_vec.normalize()
-            bullets.append({
-                "pos": player_pos.copy(),
-                "dir": dir_vec
-            })
+            # Hier käme der Schuss-Code hin (Erstellen eines Bullet-Sprites)
+            pass
 
-    keys = pygame.key.get_pressed()
-    move = pygame.Vector2(0, 0)
-    if keys[pygame.K_w]:
-        move.y -= 1
-    if keys[pygame.K_s]:
-        move.y += 1
-    if keys[pygame.K_a]:
-        move.x -= 1
-    if keys[pygame.K_d]:
-        move.x += 1
-    if move.length() != 0:
-        move = move.normalize() * player_speed
-    player_pos += move
+    # 2. Update (Verarbeitung)
+    all_sprites.update() 
 
-    for b in bullets:
-        b["pos"] += b["dir"] * bullet_speed
-    bullets = [b for b in bullets if 0 <= b["pos"].x <= WIDTH and 0 <= b["pos"].y <= HEIGHT]
-
+    # 3. Draw (Ausgabe)
     screen.fill(config.COLOR3)
-    pygame.draw.circle(screen, config.COLOR1, player_pos, 15)
-    for b in bullets:
-        pygame.draw.circle(screen, config.COLOR2, (int(b["pos"].x), int(b["pos"].y)), 4)
-
+    all_sprites.draw(screen) # Zeichnet ALLES, was in der Gruppe ist
     pygame.display.flip()
 
 pygame.quit()
-sys.exit()
