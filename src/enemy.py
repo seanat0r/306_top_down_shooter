@@ -14,22 +14,52 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
+        self.hitbox = pygame.Rect(0, 0, 30, 30)
+        self.hitbox.center = (x, y)
+
         self.hp = config.ENEMY_HEALTH
         self.speed = config.ENEMY_SPEED
         self.speed_factor = config.ENEMY_SPEED_FACTOR
         self.pos = pygame.Vector2(x, y)
 
-    def update(self, player_pos, dt, *args):
+    def update(self, player_pos, dt, obstacles, *args):
         direction = pygame.Vector2(player_pos) - self.pos
 
         if direction.length() > 0:
             velocity = direction.normalize() * self.speed * dt
-            self.pos += velocity 
 
+            # --- X-ACHSE BEWEGEN ---
+            self.pos.x += velocity.x
+            # Wir runden auf Ganzzahlen für das Rect, um Jitter zu vermeiden
+            self.hitbox.centerx = round(self.pos.x)
+        
+            # Manuelle Kollisionsprüfung für die Hitbox (WICHTIG!)
+            for wall in obstacles:
+                if self.hitbox.colliderect(wall.rect):
+                    if velocity.x > 0: # Nach rechts gelaufen
+                        self.hitbox.right = wall.rect.left
+                    if velocity.x < 0: # Nach links gelaufen
+                        self.hitbox.left = wall.rect.right
+                    self.pos.x = float(self.hitbox.centerx) 
+
+            # --- Y-ACHSE BEWEGEN ---
+            self.pos.y += velocity.y
+            self.hitbox.centery = round(self.pos.y)
+        
+            for wall in obstacles:
+                if self.hitbox.colliderect(wall.rect):
+                    if velocity.y > 0: # Nach unten gelaufen
+                        self.hitbox.bottom = wall.rect.top
+                    if velocity.y < 0: # Nach oben gelaufen
+                        self.hitbox.top = wall.rect.bottom
+                    self.pos.y = float(self.hitbox.centery)
+
+            # --- GRAFIK & ROTATION ---
             angle = direction.angle_to(pygame.Vector2(0, -1))
             self.image = pygame.transform.rotate(self.original_image, angle)
-
-            self.rect = self.image.get_rect(center=self.pos)
+        
+            # Das grafische Rect wird NUR für das Zeichnen benutzt
+            self.rect = self.image.get_rect(center=self.hitbox.center)
         
 
     def look_at(self, target_pos):

@@ -1,6 +1,6 @@
 import pygame, sys, random
 import config
-from src import Player, Projectile, Enemy
+from src import Player, Projectile, Enemy, LevelOne
 
 pygame.init()
 screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
@@ -12,7 +12,13 @@ bullets = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 
 player = Player()
+current_level = LevelOne()
+
+obstacles = current_level.obstacles
 all_sprites.add(player)
+all_sprites.add(obstacles)
+
+
 
 last_spawn_time = 0
 score = 0
@@ -61,7 +67,7 @@ while running:
                 print("Keine Munition")
 
     # 2. Update (Verarbeitung)
-    all_sprites.update(player.rect.center, dt) 
+    all_sprites.update(player.rect.center, dt, obstacles) 
 
     hits = pygame.sprite.groupcollide(enemies, bullets, False, True)
     for enemy in hits:
@@ -69,6 +75,8 @@ while running:
         score += adding_score
         print(f"Score: {score}")
         enemy.upgrade_speed(score)
+
+    pygame.sprite.groupcollide(bullets, obstacles, True, False)
         
 
     player_hits = pygame.sprite.spritecollide(player, enemies, True)

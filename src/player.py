@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
             self.hp = 0
             self.is_alive = False
 
-    def update(self, target_pos, dt, *args):
+    def update(self, target_pos, dt, obstacles, *args):
 
         if self.is_reloading:
             now = pygame.time.get_ticks()
@@ -48,8 +48,32 @@ class Player(pygame.sprite.Sprite):
 
         if direction.length() > 0:
             direction = direction.normalize()
-            self.pos += direction * self.speed * dt
-            self.rect.center = self.pos
+
+            # --- 1. X-ACHSE BEWEGEN ---
+            self.pos.x += direction.x * self.speed * dt
+            self.rect.centerx = self.pos.x
+            
+            # FRISCHE Abfrage für X
+            hit_list_x = pygame.sprite.spritecollide(self, obstacles, False)
+            for wall in hit_list_x:
+                if direction.x > 0: # Nach rechts
+                    self.rect.right = wall.rect.left
+                if direction.x < 0: # Nach links
+                    self.rect.left = wall.rect.right
+                self.pos.x = self.rect.centerx 
+
+            # --- 2. Y-ACHSE BEWEGEN ---
+            self.pos.y += direction.y * self.speed * dt
+            self.rect.centery = self.pos.y
+
+            # FRISCHE Abfrage für Y (ganz wichtig!)
+            hit_list_y = pygame.sprite.spritecollide(self, obstacles, False)
+            for wall in hit_list_y:
+                if direction.y > 0: # Nach unten
+                    self.rect.bottom = wall.rect.top
+                if direction.y < 0: # Nach oben
+                    self.rect.top = wall.rect.bottom
+                self.pos.y = self.rect.centery
 
         screen_rect = pygame.Rect(0,0, config.WIDTH, config.HEIGHT)
         self.rect.clamp_ip(screen_rect)
