@@ -36,7 +36,7 @@
 
 - **Anzahl Level (MVP)**: 2
 - **Levelaufbau**:
-  - **Dimensionen**: 16'000 x 8'000 Einheiten (Pixel)
+  - **Dimensionen**:1280 x 700 Einheiten (Pixel)
   - **Layout**:Komplexes Terrain mit zahlreichen Hindernissen.
 - **Schwierigkeitsgrad**: Die Schwierigkeit skaliert dynamisch mit der erreichten Punktzahl.
 
