@@ -19,11 +19,11 @@ class Enemy(pygame.sprite.Sprite):
         self.speed_factor = config.ENEMY_SPEED_FACTOR
         self.pos = pygame.Vector2(x, y)
 
-    def update(self, player_pos, *args):
+    def update(self, player_pos, dt, *args):
         direction = pygame.Vector2(player_pos) - self.pos
 
         if direction.length() > 0:
-            velocity = direction.normalize() * self.speed
+            velocity = direction.normalize() * self.speed * dt
             self.pos += velocity 
 
             angle = direction.angle_to(pygame.Vector2(0, -1))

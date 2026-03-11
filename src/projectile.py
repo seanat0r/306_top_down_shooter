@@ -18,8 +18,8 @@ class Projectile(pygame.sprite.Sprite):
 
         self.speed = config.BULLET_SPEED
 
-    def update(self, *args):
-        self.pos += self.direction * self.speed
+    def update(self, _pos, dt, *args):
+        self.pos += self.direction * self.speed * dt
         self.rect.center = self.pos
 
         if not pygame.display.get_surface().get_rect().contains(self.rect):

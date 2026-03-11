@@ -46,7 +46,7 @@ while running:
             running = False
         
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_r:
+            if event.key == pygame.K_r and not player.is_reloading:
                 player.reload()
         # Schießen Logik könnte man auch in eine Bullet-Klasse auslagern
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -61,7 +61,7 @@ while running:
                 print("Keine Munition")
 
     # 2. Update (Verarbeitung)
-    all_sprites.update(player.rect.center) 
+    all_sprites.update(player.rect.center, dt) 
 
     hits = pygame.sprite.groupcollide(enemies, bullets, False, True)
     for enemy in hits:
@@ -78,6 +78,7 @@ while running:
 
         if not player.is_alive:
             print("GAME OVER!")
+            running = False
             #! GAME OVER LOGIK
 
     # 3. Draw (Ausgabe)

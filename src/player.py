@@ -10,6 +10,9 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (config.WIDTH // 2, config.HEIGHT // 2)
 
+        self.pos = pygame.Vector2(config.WIDTH // 2, config.HEIGHT // 2)
+        self.rect.center = self.pos
+
         self.hp = config.PLAYER_HEALTH
         self.max_hp = config.PLAYER_HEALTH
         self.speed = config.PLAYER_SPEED
@@ -26,7 +29,7 @@ class Player(pygame.sprite.Sprite):
             self.hp = 0
             self.is_alive = False
 
-    def update(self, *args):
+    def update(self, target_pos, dt, *args):
 
         if self.is_reloading:
             now = pygame.time.get_ticks()
@@ -35,11 +38,21 @@ class Player(pygame.sprite.Sprite):
                 self.is_reloading = False
                 print("Nachladen beendet!")
 
+        direction = pygame.Vector2(0, 0)
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]: self.rect.y -= self.speed
-        if keys[pygame.K_s]: self.rect.y += self.speed
-        if keys[pygame.K_a]: self.rect.x -= self.speed
-        if keys[pygame.K_d]: self.rect.x += self.speed
+
+        if keys[pygame.K_w]: direction.y -= 1
+        if keys[pygame.K_s]: direction.y += 1
+        if keys[pygame.K_a]: direction.x -= 1
+        if keys[pygame.K_d]: direction.x += 1
+
+        if direction.length() > 0:
+            direction = direction.normalize()
+            self.pos += direction * self.speed * dt
+            self.rect.center = self.pos
+
+        screen_rect = pygame.Rect(0,0, config.WIDTH, config.HEIGHT)
+        self.rect.clamp_ip(screen_rect)
 
     def shoot(self):
         if self.ammo > 0 and not self.is_reloading:
