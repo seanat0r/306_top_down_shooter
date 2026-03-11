@@ -14,12 +14,16 @@ enemies = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 
+last_spawn_time = 0
+score = 0
+
 running = True
 while running:
+    
     dt = clock.tick(60) / 1000.0
     current_time = pygame.time.get_ticks()
 
-    if current_time - config.SPWAN_TIMER > config.SPWAN_TIMER:
+    if current_time - last_spawn_time > config.SPAWN_COOLDOWN:
         side = random.randint(0, 3)
         if side == 0:
             ex, ey = random.randint(0, config.WIDTH), -50
@@ -34,7 +38,7 @@ while running:
         enemies.add(new_enemy)
         all_sprites.add(new_enemy)
 
-        spawn_timer = current_time
+        last_spawn_time = current_time
 
     # 1. Events (Eingabe)
     for event in pygame.event.get():
@@ -51,11 +55,15 @@ while running:
             pass
 
     # 2. Update (Verarbeitung)
-    all_sprites.update() 
+    all_sprites.update(player.rect.center) 
 
     hits = pygame.sprite.groupcollide(enemies, bullets, False, True)
     for enemy in hits:
-        enemy.take_hit(1)
+        adding_score = enemy.take_hit(1)
+        score += adding_score
+        print(f"Score: {score}")
+        enemy.upgrade_speed(score)
+        
 
     player_hits = pygame.sprite.spritecollide(player, enemies, True)
     for enemy in player_hits:

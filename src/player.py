@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
             self.hp = 0
             self.is_alive = False
 
-    def update(self):
+    def update(self, *args):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]: self.rect.y -= self.speed
         if keys[pygame.K_s]: self.rect.y += self.speed

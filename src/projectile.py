@@ -18,7 +18,7 @@ class Projectile(pygame.sprite.Sprite):
 
         self.speed = config.BULLET_SPEED
 
-    def update(self):
+    def update(self, *args):
         self.pos += self.direction * self.speed
         self.rect.center = self.pos
 
