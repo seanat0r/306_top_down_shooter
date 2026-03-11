@@ -44,15 +44,21 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                player.reload()
         # Schießen Logik könnte man auch in eine Bullet-Klasse auslagern
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # Hier käme der Schuss-Code hin (Erstellen eines Bullet-Sprites)
-            mouse_pos = pygame.mouse.get_pos()
-            new_bullet = Projectile(player.rect.center, mouse_pos)
+            if player.shoot():
+                # Hier käme der Schuss-Code hin (Erstellen eines Bullet-Sprites)
+                mouse_pos = pygame.mouse.get_pos()
+                new_bullet = Projectile(player.rect.center, mouse_pos)
 
-            all_sprites.add(new_bullet)
-            bullets.add(new_bullet)
-            pass
+                all_sprites.add(new_bullet)
+                bullets.add(new_bullet)
+            else:
+                print("Keine Munition")
 
     # 2. Update (Verarbeitung)
     all_sprites.update(player.rect.center) 
