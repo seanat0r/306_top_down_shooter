@@ -59,3 +59,5 @@ class LevelTwo:
 
         for obs in level_data:
             self.obstacles.add(Obstacle(*obs))
+
+        self.exit_portal = None

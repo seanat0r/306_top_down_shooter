@@ -85,8 +85,3 @@ class Enemy(pygame.sprite.Sprite):
         if self.hp <= 0:
             self.kill()
         return config.ENEMY_SCORE_VALUE
-    
-    def upgrade_speed(self, score):
-        tenfold = score % 10
-        if tenfold == 0:
-            config.ENEMY_SPEED += self.speed_factor
