@@ -153,15 +153,33 @@ class Game:
         pygame.display.flip()
 
     def spawn_enemy(self):
-        # (Dein bisheriger Spawn Code)
-        side = random.randint(0, 3)
-        if side == 0: ex, ey = random.randint(0, config.WIDTH), -50
-        elif side == 1: ex, ey = random.randint(0, config.WIDTH), config.HEIGHT + 50
-        elif side == 2: ex, ey = -50, random.randint(0, config.HEIGHT)
-        else: ex, ey = config.WIDTH + 50, random.randint(0, config.HEIGHT)
-        new_enemy = Enemy(ex, ey)
-        self.enemies.add(new_enemy)
-        self.all_sprites.add(new_enemy)
+        # --- SCHWIERIGKEITS-LOGIK ---
+        # Wir berechnen die Anzahl: Startet bei 1, alle 50 Punkte +1
+        # Beispiel: 0-49 Score = 1 Gegner, 50-99 Score = 2 Gegner, usw.
+        spawn_count = config.ENEMY_SPAWN_INCREMENT + (self.score // config.ENEMY_SPAWN_SCORE_STEP)
+        
+        # Sicherheitsgrenze: Maximal 5 Gegner gleichzeitig spawnen, 
+        # damit das Spiel schaffbar bleibt.
+        spawn_count = min(spawn_count, 5)
+
+        # Wir führen den Spawn-Vorgang mehrfach aus
+        for _ in range(spawn_count):
+            side = random.randint(0, 3)
+            
+            # Für jeden Gegner in der Schleife berechnen wir eine neue Position,
+            # damit sie nicht alle exakt aufeinander kleben.
+            if side == 0:   # Oben
+                ex, ey = random.randint(0, config.WIDTH), -50
+            elif side == 1: # Unten
+                ex, ey = random.randint(0, config.WIDTH), config.HEIGHT + 50
+            elif side == 2: # Links
+                ex, ey = -50, random.randint(0, config.HEIGHT)
+            else:           # Rechts
+                ex, ey = config.WIDTH + 50, random.randint(0, config.HEIGHT)
+
+            new_enemy = Enemy(ex, ey)
+            self.enemies.add(new_enemy)
+            self.all_sprites.add(new_enemy)
 
     def switch_to_level_two(self):
         if self.current_level_num == 1:
