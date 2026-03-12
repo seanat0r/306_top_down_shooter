@@ -1,11 +1,12 @@
 import pygame
 import random
 import config
-from src import Player, Projectile, Enemy, LevelOne, LevelTwo
+from src import Player, Projectile, Enemy, LevelOne, LevelTwo, UIManager
 
 class Game:
     def __init__(self):
         pygame.init()
+        self.ui_manager = UIManager()
         self.screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
         pygame.display.set_caption("Top-Down Shooter")
         self.clock = pygame.time.Clock()
@@ -125,39 +126,24 @@ class Game:
 
     def draw_hud(self):
         """Grafisches Interface laut GDD"""
-        # 1. HP Herzen/Balken (Oben Links)
-        for i in range(self.player.hp):
-            pygame.draw.rect(self.screen, (255, 0, 0), (20 + (i * 40), 20, 30, 15))
-        
-        # 2. Munition (Balken Unten Rechts)
-        ammo_width = 200
-        ammo_ratio = self.player.ammo / self.player.max_ammo
-        # Hintergrund (Grau)
-        pygame.draw.rect(self.screen, (50, 50, 50), (config.WIDTH - 220, config.HEIGHT - 40, ammo_width, 20))
-        # Füllung (Gelb, oder Grau beim Reload)
-        color = (255, 255, 0) if not self.player.is_reloading else (100, 100, 100)
-        pygame.draw.rect(self.screen, color, (config.WIDTH - 220, config.HEIGHT - 40, ammo_width * ammo_ratio, 20))
-        
-        # 3. Text (Score & Zeit)
+        self.screen.fill(config.COLOR3)
+        self.all_sprites.draw(self.screen)
+    
+        # HUD aufrufen
         elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
-        score_txt = self.small_font.render(f"SCORE: {self.score}  |  TIME: {elapsed}s", True, (255, 255, 255))
-        self.screen.blit(score_txt, (20, 45))
+        self.ui_manager.draw_hud(self.screen, self.player, self.score, elapsed)
+    
+        pygame.display.flip()
 
     def draw_menu(self):
+        # Wir zeichnen das Menü über den letzten Screen-Zustand oder einen leeren
         self.screen.fill(config.COLOR3)
-        title = self.font.render("MEIN SHOOTER", True, (255, 255, 255))
-        info = self.small_font.render("Drücke ENTER zum Starten | ESC zum Beenden", True, (200, 200, 200))
-        self.screen.blit(title, (config.WIDTH//2 - title.get_width()//2, config.HEIGHT//2 - 50))
-        self.screen.blit(info, (config.WIDTH//2 - info.get_width()//2, config.HEIGHT//2 + 50))
+        self.ui_manager.draw_screen(self.screen, "MEIN SHOOTER", "Drücke ENTER zum Starten")
         pygame.display.flip()
 
     def draw_game_over(self):
-        # Wir dunkeln das Spielfeld ab (optional) oder füllen neu
-        self.screen.fill((30, 0, 0))
-        go_title = self.font.render("GAME OVER", True, config.RED)
-        stats = self.small_font.render(f"Dein Score: {self.score} | Drücke R für Neustart", True, (255, 255, 255))
-        self.screen.blit(go_title, (config.WIDTH//2 - go_title.get_width()//2, config.HEIGHT//2 - 50))
-        self.screen.blit(stats, (config.WIDTH//2 - stats.get_width()//2, config.HEIGHT//2 + 50))
+        # Hier nutzen wir das praktische Overlay
+        self.ui_manager.draw_screen(self.screen, "GAME OVER", f"Score: {self.score} | Drücke R für Neustart", (80, 0, 0, 180))
         pygame.display.flip()
 
     def draw(self):

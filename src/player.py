@@ -31,6 +31,9 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, target_pos, dt, obstacles, *args):
 
+        if self.ammo <= 0 and not self.is_reloading:
+            self.reload()
+
         if self.is_reloading:
             now = pygame.time.get_ticks()
             if now - self.reload_start_time >= self.reload_duration:
