@@ -12,11 +12,14 @@ bullets = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 
 player = Player()
-current_level = LevelTwo()
 
-obstacles = current_level.obstacles
+current_level_obj = LevelOne()
+obstacles = current_level_obj.obstacles
+level_exit = current_level_obj.exit_portal
+
 all_sprites.add(player)
 all_sprites.add(obstacles)
+all_sprites.add(level_exit)
 
 
 
@@ -45,6 +48,21 @@ while running:
         all_sprites.add(new_enemy)
 
         last_spawn_time = current_time
+
+    if pygame.sprite.collide_rect(player, level_exit):
+        print("Level Übergang")
+        all_sprites.remove(obstacles)
+        all_sprites.remove(level_exit)
+
+        for e in enemies: e.kill()
+        for b in bullets: b.kill()
+
+        current_level_obj = LevelTwo()
+        obstacles = current_level_obj.obstacles
+        all_sprites.add(obstacles)
+
+        player.pos = pygame.Vector2(60, config.HEIGHT // 2)
+        player.rect.center = player.pos
 
     # 1. Events (Eingabe)
     for event in pygame.event.get():

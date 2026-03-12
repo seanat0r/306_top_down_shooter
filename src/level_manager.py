@@ -11,6 +11,17 @@ class Obstacle(pygame.sprite.Sprite):
     def update(self, *args):
         pass
 
+class LevelExit(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+
+        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.image.fill((0, 255, 0, 150))
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+    def update(self, *args):
+        pass
+
 class LevelOne:
     def __init__(self):
         super().__init__()
@@ -27,6 +38,8 @@ class LevelOne:
         for obs in level_data:
             wall = Obstacle(*obs)
             self.obstacles.add(wall)
+
+        self.exit_portal = LevelExit(config.WIDTH - 40, config.HEIGHT // 2 - 50, 40, 100)
 
 class LevelTwo:
     def __init__(self):
