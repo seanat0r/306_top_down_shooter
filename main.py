@@ -136,9 +136,34 @@ class Game:
         pygame.display.flip()
 
     def draw_menu(self):
-        # Wir zeichnen das Menü über den letzten Screen-Zustand oder einen leeren
+        """Hauptmenü mit Steuerungshinweisen"""
         self.screen.fill(config.COLOR3)
-        self.ui_manager.draw_screen(self.screen, "MEIN SHOOTER", "Drücke ENTER zum Starten")
+        
+        # 1. Haupt-Titel und Start-Aufforderung über den UIManager
+        self.ui_manager.draw_screen(self.screen, "306 SCB - Top Down Shooter", "Drücke ENTER zum Starten")
+
+        # 2. Die Anleitung (Tutorial-Block)
+        instructions = [
+            "STEUERUNG:",
+            "WASD - Bewegen",
+            "MAUS - Zielen",
+            "LINKSKLICK - Schießen",
+            "R - Nachladen"
+        ]
+
+        # Wir zeichnen die Anleitung zeilenweise unter den Start-Text
+        start_y = config.HEIGHT // 2 + 80 # Position unter der Mitte
+        for i, line in enumerate(instructions):
+            # Die erste Zeile "STEUERUNG" machen wir etwas heller/hevorstechend
+            color = (255, 255, 255) if i == 0 else (200, 200, 200)
+            instr_surf = self.small_font.render(line, True, color)
+            
+            # Zentriert ausrichten
+            x_pos = config.WIDTH // 2 - instr_surf.get_width() // 2
+            y_pos = start_y + (i * 30) # 30 Pixel Abstand pro Zeile
+            
+            self.screen.blit(instr_surf, (x_pos, y_pos))
+
         pygame.display.flip()
 
     def draw_game_over(self):
