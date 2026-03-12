@@ -50,6 +50,8 @@ class Game:
             self.events()
 
             match self.state:
+                case "PAUSED":
+                    self.draw_pause_screen()
                 case "MENU":
                     self.draw_menu()
                 case "PLAYING":
@@ -63,11 +65,21 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
 
-            # Globaler Beenden-Knopf
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.running = False
+            if event.type == pygame.KEYDOWN:
+                # ESC schaltet jetzt die Pause um, wenn wir im Spiel sind
+                if event.key == pygame.K_ESCAPE:
+                    if self.state == "PLAYING":
+                        self.state = "PAUSED"
+                    elif self.state == "PAUSED":
+                        self.state = "PLAYING"
+                    else:
+                        self.running = False # Im Hauptmenü beendet ESC das Programm
 
             match self.state:
+                case "PAUSED":
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                        self.state = "PLAYING"
+
                 case "MENU":
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                         self.new()
@@ -124,17 +136,6 @@ class Game:
                 # WICHTIG: Sofortiger Zustandswechsel verhindert Weiterlaufen!
                 self.state = "GAMEOVER"
 
-    def draw_hud(self):
-        """Grafisches Interface laut GDD"""
-        self.screen.fill(config.COLOR3)
-        self.all_sprites.draw(self.screen)
-    
-        # HUD aufrufen
-        elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
-        self.ui_manager.draw_hud(self.screen, self.player, self.score, elapsed)
-    
-        pygame.display.flip()
-
     def draw_menu(self):
         """Hauptmenü mit Steuerungshinweisen"""
         self.screen.fill(config.COLOR3)
@@ -148,7 +149,8 @@ class Game:
             "WASD - Bewegen",
             "MAUS - Zielen",
             "LINKSKLICK - Schießen",
-            "R - Nachladen"
+            "R - Nachladen",
+            "ESC - Pause (im Spiel)/ Beenden"
         ]
 
         # Wir zeichnen die Anleitung zeilenweise unter den Start-Text
@@ -166,15 +168,37 @@ class Game:
 
         pygame.display.flip()
 
+    def draw_pause_screen(self):
+        # Erst das normale Spielfeld zeichnen (damit man es im Hintergrund sieht)
+        self.all_sprites.draw(self.screen)
+        
+        # Dann das Pause-Overlay drüberlegen (ein dunkles Grau mit Transparenz)
+        self.ui_manager.draw_screen(
+            self.screen, 
+            "PAUSE", 
+            "ESC oder ENTER zum Weiterpielen", 
+            (50, 50, 50, 150) # Dunkles Overlay
+        )
+        pygame.display.flip()
+
     def draw_game_over(self):
         # Hier nutzen wir das praktische Overlay
         self.ui_manager.draw_screen(self.screen, "GAME OVER", f"Score: {self.score} | Drücke R für Neustart", (80, 0, 0, 180))
         pygame.display.flip()
 
     def draw(self):
+        """Die einzige Zeichen-Funktion, die wir noch brauchen"""
+        # 1. Hintergrund einmal füllen
         self.screen.fill(config.COLOR3)
+    
+        # 2. Alle Spielfiguren und Hindernisse zeichnen
         self.all_sprites.draw(self.screen)
-        self.draw_hud()
+    
+        # 3. Nur die UI-Elemente (HP, Score, Zeit) darüberlegen
+        elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
+        self.ui_manager.draw_hud(self.screen, self.player, self.score, elapsed)
+    
+        # 4. Den fertigen Frame auf den Monitor bringen
         pygame.display.flip()
 
     def spawn_enemy(self):
