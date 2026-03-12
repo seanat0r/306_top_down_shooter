@@ -36,7 +36,7 @@
 
 - **Anzahl Level (MVP)**: 2
 - **Levelaufbau**:
-  - **Dimensionen**: 16'000 x 8'000 Einheiten (Pixel)
+  - **Dimensionen**:1280 x 700 Einheiten (Pixel)
   - **Layout**:Komplexes Terrain mit zahlreichen Hindernissen.
 - **Schwierigkeitsgrad**: Die Schwierigkeit skaliert dynamisch mit der erreichten Punktzahl.
 
@@ -126,12 +126,13 @@ Das HUD besteht aus vier Kernelementen:
 4. **Spielfeld**: Zentraler Bereich für die Action.
 
 ![Image showing the UI of the game](./images/Benutzeroberfläche_finale.png "The final UI")
+*- **Design-Update**: Zur Verbesserung der visuellen Klarheit und Hitbox-Präzision wird der Spieler als minimalistisches Quadrat dargestellt*
 
 ### 2.3 Software-Architektur
 
 Das Spiel folgt dem EVA-Prinzip (Eingabe, Verarbeitung, Ausgabe) und nutzt eine klassenbasierte Struktur:
 
-- **Game-Klasse (Controller)**: VZentrales Management des Main-Loops, des Event-Handlings (Input) und der Level-Übergänge.
+- **Game-Klasse (Controller)**: Zentrales Management des Main-Loops, des Event-Handlings (Input) und der Level-Übergänge.
 - **Sprite-System**: Nutzung von `pygame.sprite.Sprite` für:
   - `Player`: Inklusive HP-Management und Bewegungslogik.
   - `Enemy`: Inklusive Pathfinding/KI und Schadenslogik.
