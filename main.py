@@ -1,6 +1,6 @@
 import pygame, sys, random
 import config
-from src import Player, Projectile, Enemy, LevelOne
+from src import Player, Projectile, Enemy, LevelOne, LevelTwo
 
 pygame.init()
 screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
@@ -12,7 +12,7 @@ bullets = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 
 player = Player()
-current_level = LevelOne()
+current_level = LevelTwo()
 
 obstacles = current_level.obstacles
 all_sprites.add(player)

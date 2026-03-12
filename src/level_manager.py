@@ -18,11 +18,31 @@ class LevelOne:
         self.obstacles = pygame.sprite.Group()
 
         level_data = [
-            (200, 200, 400, 400),
-            (800, 400, 50, 200),
-            (300, 500, 150, 150)
+            (200, 100, 150, 150),
+            (400, 400, 40, 200),
+            (200, 100, 100, 100),
+            (900, 450, 200, 150),
         ]
 
         for obs in level_data:
             wall = Obstacle(*obs)
             self.obstacles.add(wall)
+
+class LevelTwo:
+    def __init__(self):
+        super().__init__()
+
+        self.obstacles = pygame.sprite.Group()
+        level_data = [
+            (800, 100, 40, 400), 
+            (600, 500, 350, 40),
+            (950, 150, 150, 150), 
+            (500, 50, 40, 150),
+
+            (150, 200, 300, 40), 
+            (150, 200, 40, 300), 
+            (150, 460, 300, 40), 
+        ]
+
+        for obs in level_data:
+            self.obstacles.add(Obstacle(*obs))
