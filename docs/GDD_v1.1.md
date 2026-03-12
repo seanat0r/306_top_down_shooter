@@ -126,6 +126,7 @@ Das HUD besteht aus vier Kernelementen:
 4. **Spielfeld**: Zentraler Bereich für die Action.
 
 ![Image showing the UI of the game](./images/Benutzeroberfläche_finale.png "The final UI")
+*- **Design-Update**: Zur Verbesserung der visuellen Klarheit und Hitbox-Präzision wird der Spieler als minimalistisches Quadrat dargestellt*
 
 ### 2.3 Software-Architektur
 
