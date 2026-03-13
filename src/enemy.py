@@ -28,35 +28,33 @@ class Enemy(pygame.sprite.Sprite):
         if direction.length() > 0:
             velocity = direction.normalize() * self.speed * dt
 
-            # --- X-ACHSE BEWEGEN ---
+            # --- X-ACHSE ---
             self.pos.x += velocity.x
             self.hitbox.centerx = round(self.pos.x)
 
             # Kollisionsprüfung X
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
-                    if velocity.x > 0: # Nach rechts gelaufen
+                    if velocity.x > 0: 
                         self.hitbox.right = wall.rect.left
-                    elif velocity.x < 0: # Nach links gelaufen
+                    elif velocity.x < 0: 
                         self.hitbox.left = wall.rect.right
-                    # Position an Hitbox angleichen (stoppt das Eindringen)
                     self.pos.x = float(self.hitbox.centerx)
 
-            # --- Y-ACHSE BEWEGEN ---
+            # --- Y-ACHSE ---
             self.pos.y += velocity.y
             self.hitbox.centery = round(self.pos.y)
 
             # Kollisionsprüfung Y
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
-                    if velocity.y > 0: # Nach unten gelaufen
+                    if velocity.y > 0: 
                         self.hitbox.bottom = wall.rect.top
-                    elif velocity.y < 0: # Nach oben gelaufen
+                    elif velocity.y < 0: 
                         self.hitbox.top = wall.rect.bottom
-                    # Position an Hitbox angleichen
                     self.pos.y = float(self.hitbox.centery)
 
-            # --- GRAFIK & ROTATION ---
+            # --- GRAFIC & ROTATION ---
             angle = direction.angle_to(pygame.Vector2(0, -1))
             self.image = pygame.transform.rotate(self.original_image, angle)
             self.rect = self.image.get_rect(center=self.hitbox.center)

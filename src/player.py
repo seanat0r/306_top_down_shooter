@@ -4,7 +4,6 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # small sprite
         self.image = pygame.Surface((50, 50))
         self.image.fill((0, 255, 0))
         self.rect = self.image.get_rect()
@@ -52,29 +51,27 @@ class Player(pygame.sprite.Sprite):
         if direction.length() > 0:
             direction = direction.normalize()
 
-            # --- 1. X-ACHSE BEWEGEN ---
+            # --- 1. X-ACHSE ---
             self.pos.x += direction.x * self.speed * dt
             self.rect.centerx = self.pos.x
             
-            # FRISCHE Abfrage für X
             hit_list_x = pygame.sprite.spritecollide(self, obstacles, False)
             for wall in hit_list_x:
-                if direction.x > 0: # Nach rechts
+                if direction.x > 0: # To Right
                     self.rect.right = wall.rect.left
-                if direction.x < 0: # Nach links
+                if direction.x < 0: # To Left
                     self.rect.left = wall.rect.right
                 self.pos.x = self.rect.centerx 
 
-            # --- 2. Y-ACHSE BEWEGEN ---
+            # --- 2. Y-ACHSE ---
             self.pos.y += direction.y * self.speed * dt
             self.rect.centery = self.pos.y
 
-            # FRISCHE Abfrage für Y (ganz wichtig!)
             hit_list_y = pygame.sprite.spritecollide(self, obstacles, False)
             for wall in hit_list_y:
-                if direction.y > 0: # Nach unten
+                if direction.y > 0: # To Top
                     self.rect.bottom = wall.rect.top
-                if direction.y < 0: # Nach oben
+                if direction.y < 0: # To Bottom
                     self.rect.top = wall.rect.bottom
                 self.pos.y = self.rect.centery
 
