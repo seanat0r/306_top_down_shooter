@@ -22,6 +22,11 @@ class Game:
 
     def new(self):
         """Initialisiert eine komplett neue Spielrunde"""
+        self.current_enemy_speed = config.ENEMY_SPEED
+        self.current_spawn_cooldown = config.SPAWN_COOLDOWN
+        self.notification_text = ""
+        self.notification_timer = 0
+
         self.all_sprites = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
@@ -107,7 +112,7 @@ class Game:
         current_time = pygame.time.get_ticks()
         
         # 1. Spawning
-        if current_time - self.last_spawn_time > config.SPAWN_COOLDOWN:
+        if current_time - self.last_spawn_time > self.current_spawn_cooldown:
             self.spawn_enemy()
             self.last_spawn_time = current_time
 
@@ -133,10 +138,7 @@ class Game:
                 self.trigger_notification("WARNUNG: FEINDLICHE VERSTÄRKUNG TRIFFT EIN!", 2000)
 
             if self.score % 10 == 0 and self.score > 0:
-                config.ENEMY_SPEED += config.ENEMY_SPEED_FACTOR
-
-                
-            
+                self.current_enemy_speed += config.ENEMY_SPEED_FACTOR
 
         # Bulets vs Wall
         pygame.sprite.groupcollide(self.bullets, self.obstacles, True, False)
@@ -161,7 +163,6 @@ class Game:
             "R - Nachladen",
             "ESC - Pause (im Spiel)/ Beenden"
         ]
-
 
         start_y = config.HEIGHT // 2 + 80 
         for i, line in enumerate(instructions):
@@ -235,7 +236,7 @@ class Game:
             else:           # Right
                 ex, ey = config.WIDTH + 50, random.randint(0, config.HEIGHT)
 
-            new_enemy = Enemy(ex, ey)
+            new_enemy = Enemy(ex, ey, self.current_enemy_speed)
             self.enemies.add(new_enemy)
             self.all_sprites.add(new_enemy)
 

@@ -3,7 +3,7 @@ import pygame
 import math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, speed):
         super().__init__()
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
         enemy_color = config.RED
@@ -18,7 +18,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox.center = (x, y)
 
         self.hp = config.ENEMY_HEALTH
-        self.speed = config.ENEMY_SPEED
+        self.speed = speed
         self.speed_factor = config.ENEMY_SPEED_FACTOR
         self.pos = pygame.Vector2(x, y)
 
