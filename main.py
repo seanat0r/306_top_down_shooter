@@ -11,8 +11,10 @@ class Game:
         pygame.display.set_caption("Top-Down Shooter")
         self.clock = pygame.time.Clock()
         self.running = True
+
+        self.notification_text = ""
+        self.notification_timer = 0
         
-        # Fonts initialisieren
         self.font = pygame.font.SysFont("Arial", 48, bold=True)    
         self.small_font = pygame.font.SysFont("Arial", 22, bold=True)
 
@@ -20,6 +22,11 @@ class Game:
 
     def new(self):
         """Initialisiert eine komplett neue Spielrunde"""
+        self.current_enemy_speed = config.ENEMY_SPEED
+        self.current_spawn_cooldown = config.SPAWN_COOLDOWN
+        self.notification_text = ""
+        self.notification_timer = 0
+
         self.all_sprites = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
@@ -44,7 +51,6 @@ class Game:
             self.all_sprites.add(self.level_exit)
 
     def run(self):
-        """Der Herzschlag des Spiels"""
         while self.running:
             self.dt = self.clock.tick(60) / 1000.0
             self.events()
@@ -86,7 +92,7 @@ class Game:
                         self.state = "PLAYING"
             
                 case "PLAYING":
-                    # Schießen & Reload Events
+                    # Shoot & Reload
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_r and not self.player.is_reloading:
                             self.player.reload()
@@ -106,11 +112,11 @@ class Game:
         current_time = pygame.time.get_ticks()
         
         # 1. Spawning
-        if current_time - self.last_spawn_time > config.SPAWN_COOLDOWN:
+        if current_time - self.last_spawn_time > self.current_spawn_cooldown:
             self.spawn_enemy()
             self.last_spawn_time = current_time
 
-        # 2. Movement & Logik
+        # 2. Movement & Logic
         self.all_sprites.update(self.player.rect.center, self.dt, self.obstacles)
         self.check_collisions()
 
@@ -119,31 +125,36 @@ class Game:
             self.switch_to_level_two()
 
     def check_collisions(self):
-        # Gegner vs Kugeln
+        # Enemy vs Bulets
         hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
         for enemy in hits:
             self.score += enemy.take_hit(1)
-            if self.score % 10 == 0 and self.score > 0:
-                config.ENEMY_SPEED += config.ENEMY_SPEED_FACTOR
 
-        # Kugeln vs Wände
+            if self.score % 100 == 0 and self.score > 0:
+                self.player.max_ammo += config.PLAYER_AMMO_FACTOR
+                self.trigger_notification(f"UPGRADE: +{config.PLAYER_AMMO_FACTOR} MAX-AMMO!\n WARNUNG: FEINDLICHE VERSTÄRKUNG TRIFFT EIN!", 4000)
+
+            elif self.score % 50 == 0 and self.score > 0:
+                self.trigger_notification("WARNUNG: FEINDLICHE VERSTÄRKUNG TRIFFT EIN!", 2000)
+
+            if self.score % 10 == 0 and self.score > 0:
+                self.current_enemy_speed += config.ENEMY_SPEED_FACTOR
+
+        # Bulets vs Wall
         pygame.sprite.groupcollide(self.bullets, self.obstacles, True, False)
 
-        # Spieler vs Gegner
+        # Player vs Enemy
         if pygame.sprite.spritecollide(self.player, self.enemies, True):
             self.player.take_damage(config.ENEMY_ATTACK_DMG)
             if not self.player.is_alive:
-                # WICHTIG: Sofortiger Zustandswechsel verhindert Weiterlaufen!
                 self.state = "GAMEOVER"
 
     def draw_menu(self):
         """Hauptmenü mit Steuerungshinweisen"""
         self.screen.fill(config.COLOR3)
         
-        # 1. Haupt-Titel und Start-Aufforderung über den UIManager
         self.ui_manager.draw_screen(self.screen, "306 SCB - Top Down Shooter", "Drücke ENTER zum Starten")
 
-        # 2. Die Anleitung (Tutorial-Block)
         instructions = [
             "STEUERUNG:",
             "WASD - Bewegen",
@@ -153,80 +164,79 @@ class Game:
             "ESC - Pause (im Spiel)/ Beenden"
         ]
 
-        # Wir zeichnen die Anleitung zeilenweise unter den Start-Text
-        start_y = config.HEIGHT // 2 + 80 # Position unter der Mitte
+        start_y = config.HEIGHT // 2 + 80 
         for i, line in enumerate(instructions):
-            # Die erste Zeile "STEUERUNG" machen wir etwas heller/hevorstechend
+            
             color = (255, 255, 255) if i == 0 else (200, 200, 200)
             instr_surf = self.small_font.render(line, True, color)
             
-            # Zentriert ausrichten
             x_pos = config.WIDTH // 2 - instr_surf.get_width() // 2
-            y_pos = start_y + (i * 30) # 30 Pixel Abstand pro Zeile
+            y_pos = start_y + (i * 30) 
             
             self.screen.blit(instr_surf, (x_pos, y_pos))
 
         pygame.display.flip()
 
     def draw_pause_screen(self):
-        # Erst das normale Spielfeld zeichnen (damit man es im Hintergrund sieht)
         self.all_sprites.draw(self.screen)
         
-        # Dann das Pause-Overlay drüberlegen (ein dunkles Grau mit Transparenz)
         self.ui_manager.draw_screen(
             self.screen, 
             "PAUSE", 
             "ESC oder ENTER zum Weiterpielen", 
-            (50, 50, 50, 150) # Dunkles Overlay
+            (50, 50, 50, 150)
         )
         pygame.display.flip()
 
     def draw_game_over(self):
-        # Hier nutzen wir das praktische Overlay
         self.ui_manager.draw_screen(self.screen, "GAME OVER", f"Score: {self.score} | Drücke R für Neustart", (80, 0, 0, 180))
         pygame.display.flip()
 
     def draw(self):
-        """Die einzige Zeichen-Funktion, die wir noch brauchen"""
-        # 1. Hintergrund einmal füllen
+
         self.screen.fill(config.COLOR3)
     
-        # 2. Alle Spielfiguren und Hindernisse zeichnen
         self.all_sprites.draw(self.screen)
     
-        # 3. Nur die UI-Elemente (HP, Score, Zeit) darüberlegen
         elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
         self.ui_manager.draw_hud(self.screen, self.player, self.score, elapsed)
+
+        # Notification
+        if pygame.time.get_ticks() < self.notification_timer:
+            lines = self.notification_text.split('\n')
+            
+            base_y = 120 
+            
+            for i, line in enumerate(lines):
+                notif_surf = self.small_font.render(line, True, (255, 255, 0))
+                
+                notif_rect = notif_surf.get_rect(center=(config.WIDTH // 2, base_y + (i * 30)))
+                
+                bg_rect = notif_rect.inflate(20, 10)
+                pygame.draw.rect(self.screen, (0, 0, 0, 150), bg_rect)
+                
+                self.screen.blit(notif_surf, notif_rect)
     
-        # 4. Den fertigen Frame auf den Monitor bringen
         pygame.display.flip()
 
     def spawn_enemy(self):
-        # --- SCHWIERIGKEITS-LOGIK ---
-        # Wir berechnen die Anzahl: Startet bei 1, alle 50 Punkte +1
-        # Beispiel: 0-49 Score = 1 Gegner, 50-99 Score = 2 Gegner, usw.
         spawn_count = config.ENEMY_SPAWN_INCREMENT + (self.score // config.ENEMY_SPAWN_SCORE_STEP)
         
-        # Sicherheitsgrenze: Maximal 5 Gegner gleichzeitig spawnen, 
-        # damit das Spiel schaffbar bleibt.
         spawn_count = min(spawn_count, 5)
 
-        # Wir führen den Spawn-Vorgang mehrfach aus
         for _ in range(spawn_count):
             side = random.randint(0, 3)
-            
-            # Für jeden Gegner in der Schleife berechnen wir eine neue Position,
-            # damit sie nicht alle exakt aufeinander kleben.
-            if side == 0:   # Oben
+
+            if side == 0:   # Top
                 ex, ey = random.randint(0, config.WIDTH), -50
-            elif side == 1: # Unten
+            elif side == 1: # Bottom
                 ex, ey = random.randint(0, config.WIDTH), config.HEIGHT + 50
-            elif side == 2: # Links
+            elif side == 2: # Left
                 ex, ey = -50, random.randint(0, config.HEIGHT)
-            else:           # Rechts
+            else:           # Right
                 ex, ey = config.WIDTH + 50, random.randint(0, config.HEIGHT)
 
-            new_enemy = Enemy(ex, ey)
+            new_enemy = Enemy(ex, ey, self.current_enemy_speed)
             self.enemies.add(new_enemy)
             self.all_sprites.add(new_enemy)
 
@@ -241,6 +251,11 @@ class Game:
             self.load_level(LevelTwo())
             self.player.pos = pygame.Vector2(60, config.HEIGHT // 2)
             self.player.rect.center = self.player.pos
+
+    def trigger_notification(self, text, time):
+        duration = time
+        self.notification_text = text
+        self.notification_timer = pygame.time.get_ticks() + duration
 
 if __name__ == "__main__":
     game = Game()
