@@ -11,6 +11,9 @@ class Game:
         pygame.display.set_caption("Top-Down Shooter")
         self.clock = pygame.time.Clock()
         self.running = True
+
+        self.notification_text = ""
+        self.notification_timer = 0
         
         # Fonts initialisieren
         self.font = pygame.font.SysFont("Arial", 48, bold=True)    
@@ -123,8 +126,19 @@ class Game:
         hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
         for enemy in hits:
             self.score += enemy.take_hit(1)
+
+            if self.score % 100 == 0 and self.score > 0:
+                self.player.max_ammo += config.PLAYER_AMMO_FACTOR
+                self.trigger_notification(f"UPGRADE: +{config.PLAYER_AMMO_FACTOR} MAX-AMMO!\n WARNUNG: FEINDLICHE VERSTÄRKUNG TRIFFT EIN!", 4000)
+
+            elif self.score % 50 == 0 and self.score > 0:
+                self.trigger_notification("WARNUNG: FEINDLICHE VERSTÄRKUNG TRIFFT EIN!", 2000)
+
             if self.score % 10 == 0 and self.score > 0:
                 config.ENEMY_SPEED += config.ENEMY_SPEED_FACTOR
+
+                
+            
 
         # Kugeln vs Wände
         pygame.sprite.groupcollide(self.bullets, self.obstacles, True, False)
@@ -197,6 +211,27 @@ class Game:
         # 3. Nur die UI-Elemente (HP, Score, Zeit) darüberlegen
         elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
         self.ui_manager.draw_hud(self.screen, self.player, self.score, elapsed)
+
+        if pygame.time.get_ticks() < self.notification_timer:
+            # Den Text an jedem \n zerhacken
+            lines = self.notification_text.split('\n')
+            
+            # Wir berechnen die Gesamt-Position
+            base_y = 120 
+            
+            for i, line in enumerate(lines):
+                # Jede Zeile einzeln rendern
+                notif_surf = self.small_font.render(line, True, (255, 255, 0))
+                
+                # Jede Zeile etwas weiter unten platzieren (i * 30 Pixel Abstand)
+                notif_rect = notif_surf.get_rect(center=(config.WIDTH // 2, base_y + (i * 30)))
+                
+                # Hintergrund-Rechteck (nur einmal oder für jede Zeile)
+                bg_rect = notif_rect.inflate(20, 10)
+                pygame.draw.rect(self.screen, (0, 0, 0, 150), bg_rect)
+                
+                # Text auf den Screen bringen
+                self.screen.blit(notif_surf, notif_rect)
     
         # 4. Den fertigen Frame auf den Monitor bringen
         pygame.display.flip()
@@ -241,6 +276,11 @@ class Game:
             self.load_level(LevelTwo())
             self.player.pos = pygame.Vector2(60, config.HEIGHT // 2)
             self.player.rect.center = self.player.pos
+
+    def trigger_notification(self, text, time):
+        duration = time
+        self.notification_text = text
+        self.notification_timer = pygame.time.get_ticks() + duration
 
 if __name__ == "__main__":
     game = Game()
