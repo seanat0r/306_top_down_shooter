@@ -31,48 +31,34 @@ class Enemy(pygame.sprite.Sprite):
             # --- X-ACHSE BEWEGEN ---
             self.pos.x += velocity.x
             self.hitbox.centerx = round(self.pos.x)
-        
-            hit_x = False
+
+            # Kollisionsprüfung X
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
-                    hit_x = True
                     if velocity.x > 0: # Nach rechts gelaufen
                         self.hitbox.right = wall.rect.left
-                    if velocity.x < 0: # Nach links gelaufen
+                    elif velocity.x < 0: # Nach links gelaufen
                         self.hitbox.left = wall.rect.right
+                    # Position an Hitbox angleichen (stoppt das Eindringen)
                     self.pos.x = float(self.hitbox.centerx)
-
-            # SCHLAUE LOGIK: Wenn X blockiert ist, hilf bei der Y-Bewegung
-            if hit_x:
-                # Wir schauen, in welche Richtung der Gegner sowieso auf der Y-Achse wollte
-                y_slide = 1 if velocity.y >= 0 else -1
-                # Wir geben einen Bonus-Schub auf Y, damit er um die Ecke gleitet
-                self.pos.y += y_slide * self.speed * dt * 0.5
 
             # --- Y-ACHSE BEWEGEN ---
             self.pos.y += velocity.y
             self.hitbox.centery = round(self.pos.y)
-        
-            hit_y = False
+
+            # Kollisionsprüfung Y
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
-                    hit_y = True
                     if velocity.y > 0: # Nach unten gelaufen
                         self.hitbox.bottom = wall.rect.top
-                    if velocity.y < 0: # Nach oben gelaufen
+                    elif velocity.y < 0: # Nach oben gelaufen
                         self.hitbox.top = wall.rect.bottom
+                    # Position an Hitbox angleichen
                     self.pos.y = float(self.hitbox.centery)
-
-            # SCHLAUE LOGIK: Wenn Y blockiert ist, hilf bei der X-Bewegung
-            if hit_y:
-                x_slide = 1 if velocity.x >= 0 else -1
-                self.pos.x += x_slide * self.speed * dt * 0.5
 
             # --- GRAFIK & ROTATION ---
             angle = direction.angle_to(pygame.Vector2(0, -1))
             self.image = pygame.transform.rotate(self.original_image, angle)
-        
-            # Das grafische Rect wird NUR für das Zeichnen benutzt
             self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def look_at(self, target_pos):
