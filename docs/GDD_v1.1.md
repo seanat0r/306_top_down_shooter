@@ -13,7 +13,8 @@
 2. [Spiellogik](#2-spiellogik)\
   2.1[Gameplay Loop](#21-gameloop)\
   2.2[Entity](#22-entity)\
-  2.3[Architektur](#23-software-architektur)
+  2.3 [Benutzeroberfläche](#23-benutzeroberfläche-details)\
+  2.4[Architektur](#24-software-architektur)
 
 ## 1. Grobspezifikation & Anforderungen
 
@@ -78,20 +79,23 @@
 
 ### 2.1 Gameloop
 
-Der Kern des Spiels besteht aus dem Überlebenskampf gegen kontinuierlich spawnende Gegnerwellen. Durch das Eliminieren von Gegnern erhält der Spieler jeweils einen Punkt (+1 Score). Das Ziel ist es, so lange wie möglich zu überleben und dabei mindestens Level 2 zu erreichen.
+Der Kern des Spiels besteht aus dem Überlebenskampf gegen kontinuierlich spawnende Gegnerwellen.
+
+- **Progression**: Durch das Eliminieren von Gegnern erhält der Spieler Punkte (+1 Score). Das Ziel ist das Erreichen von Level 2 und ein möglichst hoher Highscore.
+- **Zustandssteuerung(Pause)**: Das Spiel nutzt eine State-Machine. Über die ESC-Taste kann das Spiel jederzeit pausiert werden. Dabei wird die Update-Logik (Bewegung, Spawning, Timer) eingefroren, während das aktuelle Spielfeld im Hintergrund sichtbar bleibt.
 
 ### 2.2 Entity
 
 #### Spieler
 
 - **Leben**: Maximal 3 Lebenspunkte.
-- **Munition**: Begrenztes Magazin; erfordert automatisches oder manuelles Nachladen per Tastendruck.
+- **Munition**: Begrenztes Magazin mit manuellem/automatischem Reload (R-Taste). Als Belohnung für den Fortschritt erhöht sich die maximale Magazinkapazität alle 100 Punkte um +5 Schuss.
 - **Score**: Akkumulierte Punkte durch besiegte Gegner.
 - **Waffe**: Eine Fernkampfwaffe (Projektilbasis).
 
 #### Gegner
 
-- **Skalierung**: Mit steigendem Score erhöhen sich die Geschwindigkeit und die Schwierigkeit der Gegner.
+- **Skalierung**: Mit steigendem Score erhöhen sich die Geschwindigkeit und die Spawnmenge und die Schwierigkeit der Gegner.
 - **Leben**: Startwert beträgt 1 HP.
 - **Nahkampfschaden**: Bei physischem Kontakt mit dem Spieler verliert dieser Lebenspunkte.
 - **Bewegung**: Gegner verfolgen den Spieler aktiv auf der Karte.
@@ -116,8 +120,9 @@ Wenige Hindernisse; dient als Tutorial zur Einführung in die Steuerung und Mech
 
 Erhöhte Komplexität durch viele Hindernisse und Sackgassen, um den Spieler strategisch zu fordern.
 
-### 2.2 Benutzeroberfläche (Details)
+### 2.3 Benutzeroberfläche (Details)
 
+Bei einem Munitionserhöhung oder wenn die Gegneranzahl pro Welle erhöht werden kommt eine Benachrichtigung.
 Das HUD besteht aus vier Kernelementen:
 
 1. **Lebensanzeige**: Horizontal am oberen linken Bildschirmrand.
@@ -128,7 +133,7 @@ Das HUD besteht aus vier Kernelementen:
 ![Image showing the UI of the game](./images/Benutzeroberfläche_finale.png "The final UI")
 *- **Design-Update**: Zur Verbesserung der visuellen Klarheit und Hitbox-Präzision wird der Spieler als minimalistisches Quadrat dargestellt*
 
-### 2.3 Software-Architektur
+### 2.4 Software-Architektur
 
 Das Spiel folgt dem EVA-Prinzip (Eingabe, Verarbeitung, Ausgabe) und nutzt eine klassenbasierte Struktur:
 
@@ -137,5 +142,6 @@ Das Spiel folgt dem EVA-Prinzip (Eingabe, Verarbeitung, Ausgabe) und nutzt eine 
   - `Player`: Inklusive HP-Management und Bewegungslogik.
   - `Enemy`: Inklusive Pathfinding/KI und Schadenslogik.
   - `Projectile`: Berechnung der Flugbahn und Kollisionsabfrage.
-- **Level-Manager**: Verantwortlich für das Laden der Map-Daten (Kollisionsmatrix) und das Instanziieren der Entities.
+- **Level-Manager**: Verantwortlich für das Laden der Map-Daten (Kollisionsmatrix).
 - **UI-Manager**: Rendering des HUDs als Overlay über dem Spielgeschehen.
+- **Config**: Alle Konstanten befinden sich dort.
