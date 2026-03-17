@@ -6,8 +6,8 @@ Ein intensiver Survival-Shooter, entwickelt im Rahmen des Moduls 306 mit **Pytho
 
 Das Spiel wird als eigenständige Applikation geliefert und benötigt keine installierte Python-Umgebung.
 
-1. Navigieren Sie in den Ordner `dist`.
-2. Starten Sie die Datei `TopDown_Shooter.exe`.
+1. Navigieren Sie/ Laden Sie die den Ordner Herunter in den Ordner `game`.
+2. Starten Sie die Datei `TopDownShooter.exe`.
 3. **Wichtiger Hinweis:** Da die Datei nicht digital signiert ist, erscheint beim Start möglicherweise der Windows-SmartScreen. Klicken Sie auf **"Weitere Informationen"** -> **"Trotzdem ausführen"**.
 
 ---
