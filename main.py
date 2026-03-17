@@ -61,7 +61,7 @@ class Game:
                 case "MENU":
                     self.draw_menu()
                 case "PLAYING":
-                    self.update() # Update läuft NUR hier
+                    self.update()
                     self.draw()
                 case "GAMEOVER":
                     self.draw_game_over()
@@ -72,14 +72,14 @@ class Game:
                 self.running = False
 
             if event.type == pygame.KEYDOWN:
-                # ESC schaltet jetzt die Pause um, wenn wir im Spiel sind
+                
                 if event.key == pygame.K_ESCAPE:
                     if self.state == "PLAYING":
                         self.state = "PAUSED"
                     elif self.state == "PAUSED":
                         self.state = "PLAYING"
                     else:
-                        self.running = False # Im Hauptmenü beendet ESC das Programm
+                        self.running = False 
 
             match self.state:
                 case "PAUSED":
