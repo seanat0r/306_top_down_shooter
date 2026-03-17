@@ -6,7 +6,7 @@ from src import config
 @pytest.fixture(autouse=True)
 def setup_pygame():
     pygame.init()
-    pygame.display.set_mode((800, 600), pygame.NOFRAME) # Screen-Größe für Boundary-Check
+    pygame.display.set_mode((800, 600), pygame.NOFRAME)
     yield
     pygame.quit()
 
