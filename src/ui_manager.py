@@ -1,5 +1,5 @@
 import pygame
-import config
+from . import config
 
 class UIManager:
     def __init__(self):
