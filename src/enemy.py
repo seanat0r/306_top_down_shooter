@@ -31,8 +31,7 @@ class Enemy(pygame.sprite.Sprite):
             # --- X-ACHSE ---
             self.pos.x += velocity.x
             self.hitbox.centerx = round(self.pos.x)
-
-            # Kollisionsprüfung X
+         
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
                     if velocity.x > 0: 
@@ -45,7 +44,6 @@ class Enemy(pygame.sprite.Sprite):
             self.pos.y += velocity.y
             self.hitbox.centery = round(self.pos.y)
 
-            # Kollisionsprüfung Y
             for wall in obstacles:
                 if self.hitbox.colliderect(wall.rect):
                     if velocity.y > 0: 
