@@ -78,9 +78,9 @@ class UIManager:
         pygame.draw.circle(screen, self.COLOR_HP, right_center, circle_radius)
 
         triangle_points = [
-            (x, y_adj + circle_radius),              # Ganz links außen
-            (x + size, y_adj + circle_radius),       # Ganz rechts außen
-            (x + size // 2, y_adj + size)            # Spitze unten
+            (x, y_adj + circle_radius),              
+            (x + size, y_adj + circle_radius),      
+            (x + size // 2, y_adj + size)            
         ]
         pygame.draw.polygon(screen, self.COLOR_HP, triangle_points)
 
