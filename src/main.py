@@ -1,7 +1,7 @@
 import pygame
 import random
 import config
-from src import Player, Projectile, Enemy, LevelOne, LevelTwo, UIManager
+from src import Player, Projectile, Enemy, LevelOne, LevelTwo, UIManager, config
 
 class Game:
     def __init__(self):

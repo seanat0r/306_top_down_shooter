@@ -1,4 +1,4 @@
-import config
+from . import config
 import pygame
 import math
 

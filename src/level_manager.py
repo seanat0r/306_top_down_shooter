@@ -1,5 +1,5 @@
 import pygame
-import config
+from . import config
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
