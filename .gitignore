@@ -205,3 +205,5 @@ vscode/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+**/*Zone.Identifier
