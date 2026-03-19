@@ -1,12 +1,11 @@
 import pygame
 import random
-import config
-from src import Player, Projectile, Enemy, LevelOne, LevelTwo, UIManager, config
+from . import player, projectile, enemy, level_manager, ui_manager, config
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.ui_manager = UIManager()
+        self.ui_manager = ui_manager.UIManager()
         self.screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
         pygame.display.set_caption("Top-Down Shooter")
         self.clock = pygame.time.Clock()
@@ -31,11 +30,11 @@ class Game:
         self.bullets = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         
-        self.player = Player()
+        self.player = player.Player()
         self.all_sprites.add(self.player)
         
         self.current_level_num = 1
-        self.load_level(LevelOne())
+        self.load_level(level_manager.LevelOne())
         
         self.score = 0
         self.start_time = pygame.time.get_ticks()
@@ -100,7 +99,7 @@ class Game:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                         if self.player.shoot():
                             mouse_pos = pygame.mouse.get_pos()
-                            new_bullet = Projectile(self.player.rect.center, mouse_pos)
+                            new_bullet = projectile.Projectile(self.player.rect.center, mouse_pos)
                             self.all_sprites.add(new_bullet)
                             self.bullets.add(new_bullet)
 
@@ -236,7 +235,7 @@ class Game:
             else:           # Right
                 ex, ey = config.WIDTH + 50, random.randint(0, config.HEIGHT)
 
-            new_enemy = Enemy(ex, ey, self.current_enemy_speed)
+            new_enemy = enemy.Enemy(ex, ey, self.current_enemy_speed)
             self.enemies.add(new_enemy)
             self.all_sprites.add(new_enemy)
 
@@ -248,7 +247,7 @@ class Game:
             if self.level_exit: self.all_sprites.remove(self.level_exit)
             for e in self.enemies: e.kill()
             for b in self.bullets: b.kill()
-            self.load_level(LevelTwo())
+            self.load_level(level_manager.LevelTwo())
             self.player.pos = pygame.Vector2(60, config.HEIGHT // 2)
             self.player.rect.center = self.player.pos
 
