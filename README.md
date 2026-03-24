@@ -43,6 +43,31 @@ Die Software-Architektur ist nach dem EVA-Prinzip strukturiert:
 2. **Verarbeitung:** Vektor-basierte Bewegungslogik und präzise Kollisionsabfragen auf zwei Achsen.
 3. **Ausgabe:** Sprite-basiertes Rendering mit stabilen 60 FPS und Overlay-UI.
 
+## Tech-Stack
+
+* **Sprache:** Python 3.12.3
+* **Game-Engine:** [pygame-ce](https://pyga.me/) (Community Edition) v2.5.7
+* **Testing:** [pytest](https://docs.pytest.org/) für automatisierte Unit-Tests
+* **Deployment:** PyInstaller (Erstellung der standalone .exe)
+
+### Projektstruktur & Architektur
+
+Das Projekt folgt einem modularen Ansatz, um die Trennung von Spiellogik, UI und Konfiguration zu gewährleisten:
+
+```text
+306_top_down_shooter/
+├── src/                # Quellcode (Source)
+│   ├── main.py         # Game-Loop & State-Management
+│   ├── player.py       # Spieler-Logik (Bewegung, Munition)
+│   ├── enemy.py        # KI-Verhalten (Vektor-Tracking)
+│   ├── projectile.py   # Projektil-Physik
+│   ├── level_manager.py# Szenenwechsel & Hindernisse
+│   ├── ui_manager.py   # HUD & Menü-Anzeigen
+│   └── config.py       # Zentrale Spiel-Konstanten
+├── tests/              # Automatisierte Unit-Tests
+└── game/              # Fertige Ordner zum downlaoden
+```
+
 ---
 
 ## Projektteam
